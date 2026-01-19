@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Samsung TV App</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="$WEBAPIS/webapis/webapis.js"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+</head>
+<body>
+    <div id="app-container">
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="screen">
+            <div id="splash-content">
+                <img id="splash-logo" src="images/logo.png" alt="App Logo">
+            </div>
+        </div>
+        <!-- Video Player Screen -->
+        <div id="player-screen" class="screen hidden">
+            <object id="av-player" type="application/avplayer"></object>
+            <div id="player-controls">
+                <div id="player-info">
+                    <h2 id="video-title"></h2>
+                    <div id="video-progress">
+                        <div id="progress-bar"></div>
+                    </div>
+                    <div id="video-time">
+                        <span id="current-time">00:00</span> / <span id="total-time">00:00</span>
+                    </div>
+                </div>
+            </div>
+            <div id="loading-indicator" class="hidden">Loading...</div>
+        </div>
+
+        <!-- Ad Player Screen -->
+        <div id="ad-screen" class="screen hidden">
+            <object id="ad-player" type="application/avplayer"></object>
+            <div id="ad-info">
+                <span id="ad-text">Advertisement</span>
+                <span id="ad-countdown"></span>
+            </div>
+        </div>
+
+        <!-- Content Browser Screen -->
+        <div id="browser-screen" class="screen hidden">
+            <div id="header">
+                <h1>Samsung TV App</h1>
+            </div>
+            <div id="content-container">
+                <!-- Categories will be dynamically added here -->
+            </div>
+            <div id="loading" class="hidden">Loading content...</div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript files -->
+    <script src="js/config.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/mrss-parser.js"></script>
+    <script src="js/video-player.js"></script>
+    <script src="js/ad-manager.js"></script>
+    <script src="js/ui-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
