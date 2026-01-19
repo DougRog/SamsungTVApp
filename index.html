@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Samsung TV App</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="$WEBAPIS/webapis/webapis.js"></script>
 
@@ -17,6 +23,12 @@
 </head>
 <body>
     <div id="app-container">
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="screen">
+            <div id="splash-content">
+                <img id="splash-logo" src="images/logo.png" alt="App Logo">
+            </div>
+        </div>
         <!-- Video Player Screen -->
         <div id="player-screen" class="screen hidden">
             <object id="av-player" type="application/avplayer"></object>
@@ -44,7 +56,7 @@
         </div>
 
         <!-- Content Browser Screen -->
-        <div id="browser-screen" class="screen">
+        <div id="browser-screen" class="screen hidden">
             <div id="header">
                 <h1>Samsung TV App</h1>
             </div>

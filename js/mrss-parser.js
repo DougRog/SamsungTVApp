@@ -1,7 +1,72 @@
 // MRSS Feed Parser
 const MRSSParser = {
     /**
-     * Fetch and parse MRSS feed
+     * Fetch and parse multiple MRSS feeds based on categories
+     * @param {Array} categories - Array of category objects with name and feedUrl
+     * @returns {Promise<Object>} Parsed content organized by categories
+     */
+    async fetchMultipleFeeds(categories) {
+        const allContent = {};
+
+        // Fetch all feeds in parallel
+        const fetchPromises = categories
+            .filter(cat => cat.enabled !== false)
+            .map(async (category) => {
+                try {
+                    console.log(`Fetching feed for ${category.name}:`, category.feedUrl);
+
+                    const videos = await this.fetchAndParseSingle(category.feedUrl, category.name);
+
+                    if (videos && videos.length > 0) {
+                        allContent[category.name] = videos;
+                    }
+
+                } catch (error) {
+                    console.error(`Error fetching feed for ${category.name}:`, error);
+                    Analytics.trackError('Category Feed Error', `${category.name}: ${error.message}`);
+                }
+            });
+
+        await Promise.all(fetchPromises);
+
+        return allContent;
+    },
+
+    /**
+     * Fetch and parse a single MRSS feed
+     * @param {string} feedUrl - URL of the MRSS feed
+     * @param {string} categoryName - Name of the category
+     * @returns {Promise<Array>} Array of video objects
+     */
+    async fetchAndParseSingle(feedUrl, categoryName) {
+        try {
+            const response = await fetch(feedUrl);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const xmlText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+            // Check for XML parsing errors
+            const parserError = xmlDoc.querySelector('parsererror');
+            if (parserError) {
+                throw new Error('XML parsing error');
+            }
+
+            return this.parseFeed(xmlDoc, categoryName);
+
+        } catch (error) {
+            console.error('Error fetching MRSS feed:', error);
+            Analytics.trackError('MRSS Fetch Error', error.message);
+            throw error;
+        }
+    },
+
+    /**
+     * Fetch and parse MRSS feed (legacy method for single feed with categories)
      * @param {string} feedUrl - URL of the MRSS feed
      * @returns {Promise<Object>} Parsed content organized by categories
      */
@@ -18,6 +83,26 @@ const MRSSParser = {
             Analytics.trackError('MRSS Fetch Error', error.message);
             throw error;
         }
+    },
+
+    /**
+     * Parse XML feed and return array of videos for a specific category
+     * @param {Document} xmlDoc - Parsed XML document
+     * @param {string} categoryName - Category name
+     * @returns {Array} Array of video objects
+     */
+    parseFeed(xmlDoc, categoryName) {
+        const items = xmlDoc.querySelectorAll('item');
+        const videos = [];
+
+        items.forEach(item => {
+            const video = this.parseItem(item, categoryName);
+            if (video) {
+                videos.push(video);
+            }
+        });
+
+        return videos;
     },
 
     /**
@@ -46,9 +131,10 @@ const MRSSParser = {
     /**
      * Parse individual MRSS item
      * @param {Element} item - XML item element
+     * @param {string} categoryName - Optional category name override
      * @returns {Object} Parsed video object
      */
-    parseItem(item) {
+    parseItem(item, categoryName = null) {
         try {
             // Extract title
             const title = item.querySelector('title')?.textContent || 'Untitled';
@@ -56,8 +142,9 @@ const MRSSParser = {
             // Extract description
             const description = item.querySelector('description')?.textContent || '';
 
-            // Extract category
-            const category = item.querySelector('category')?.textContent ||
+            // Extract category - use provided category name or parse from XML
+            const category = categoryName ||
+                           item.querySelector('category')?.textContent ||
                            item.querySelector('media\\:category, category')?.textContent ||
                            'Uncategorized';
 

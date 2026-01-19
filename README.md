@@ -1,236 +1,282 @@
 # Samsung Tizen CTV App
 
-A Connected TV (CTV) application for Samsung Tizen platform that displays video content organized by categories from an MRSS feed, with support for M3U8 streaming, Google Analytics tracking, and preroll advertisements.
+A Connected TV (CTV) application for Samsung Tizen platform with web-based configuration, multiple MRSS feed support, customizable theming, splash screen, Google Analytics, and preroll advertisements.
 
 ## Features
 
-- **Category-based Content Rows**: Displays content organized in horizontal rows by category
-- **MRSS Feed Integration**: Dynamically pulls content from MRSS XML feeds
-- **M3U8 Streaming**: Supports HLS (HTTP Live Streaming) video playback
-- **Google Analytics**: Tracks user interactions, video plays, and completions
-- **Preroll Ads**: Shows advertisement every 5 videos played
-- **TV Remote Navigation**: Full support for Samsung TV remote control
+- **Web-Based Configuration**: Host configuration at a URL for easy updates without rebuilding
+- **Multiple MRSS Feeds**: Each category pulls from its own dedicated feed
+- **Customizable Splash Screen**: Branded splash with configurable logo, colors, and duration
+- **Dynamic Theming**: Configurable colors, fonts (Inter by default), and styling
+- **Category-based Rows**: Content organized in horizontal scrolling rows
+- **M3U8 Streaming**: HLS video playback using Samsung AVPlay API
+- **Google Analytics**: Comprehensive event tracking
+- **Preroll Ads**: VAST ad integration with configurable frequency
+- **TV Remote Navigation**: Full Samsung TV remote control support
+
+## Quick Start
+
+### 1. Configure the App
+
+Create or edit `app-config.json` with your settings:
+
+```json
+{
+  "app": {
+    "name": "Your App Name",
+    "version": "1.0.0"
+  },
+  "theme": {
+    "backgroundColor": "#00277e",
+    "textColor": "#ffffff",
+    "fontFamily": "Inter, Arial, sans-serif",
+    "accentColor": "#ffffff"
+  },
+  "splash": {
+    "enabled": true,
+    "backgroundColor": "#00277e",
+    "logoUrl": "images/logo.png",
+    "logoScale": 0.5,
+    "duration": 3000
+  },
+  "analytics": {
+    "googleAnalyticsId": "G-XXXXXXXXXX",
+    "enabled": true
+  },
+  "ads": {
+    "enabled": true,
+    "frequency": 5,
+    "vastTagUrl": "https://example.com/vast.xml"
+  },
+  "categories": [
+    {
+      "name": "Action",
+      "feedUrl": "https://example.com/feeds/action.xml",
+      "enabled": true
+    },
+    {
+      "name": "Comedy",
+      "feedUrl": "https://example.com/feeds/comedy.xml",
+      "enabled": true
+    }
+  ]
+}
+```
+
+See [CONFIG.md](CONFIG.md) for detailed configuration options.
+
+### 2. Add Your Logo
+
+Place your logo image at `images/logo.png` (recommended size: 800x400px or larger)
+
+### 3. Configure Remote or Local Config
+
+Edit `js/config.js`:
+
+**For remote configuration (recommended for production):**
+```javascript
+CONFIG_URL: 'https://your-domain.com/app-config.json',
+USE_LOCAL_CONFIG: false
+```
+
+**For local configuration (development):**
+```javascript
+USE_LOCAL_CONFIG: true,
+LOCAL_CONFIG_PATH: 'app-config.json'
+```
+
+### 4. Update App ID
+
+Edit `config.xml` and replace `YOUR_APP_ID`:
+```xml
+<tizen:application id="YOUR_APP_ID.SamsungTVApp" package="YOUR_APP_ID"/>
+```
+
+### 5. Update Google Analytics ID
+
+Edit `index.html` (lines 16 and 21) and replace `GA_MEASUREMENT_ID` with your actual Google Analytics ID.
 
 ## Project Structure
 
 ```
 SamsungTVApp/
-├── index.html              # Main HTML file
+├── index.html              # Main HTML with splash screen
+├── app-config.json         # Web-based configuration file
 ├── config.xml              # Tizen app configuration
 ├── .project                # Tizen project file
 ├── css/
-│   └── style.css          # Application styles
+│   └── style.css          # Styles with CSS variables for theming
 ├── js/
-│   ├── app.js             # Main application entry point
-│   ├── config.js          # Configuration settings
-│   ├── mrss-parser.js     # MRSS feed parser
-│   ├── ui-manager.js      # UI rendering and management
-│   ├── video-player.js    # Video player with AVPlay API
-│   ├── ad-manager.js      # Advertisement management
-│   ├── analytics.js       # Google Analytics integration
-│   └── navigation.js      # TV remote control navigation
-└── images/
-    ├── icon.png           # App icon
-    └── placeholder.png    # Placeholder thumbnail
-```
-
-## Configuration
-
-### 1. Update MRSS Feed URL
-
-Edit `js/config.js` and set your MRSS feed URL:
-
-```javascript
-MRSS_FEED_URL: 'https://your-domain.com/feed.xml',
-```
-
-### 2. Configure Google Analytics
-
-1. Edit `index.html` and replace `GA_MEASUREMENT_ID` with your Google Analytics 4 Measurement ID:
-
-```html
-<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-```
-
-2. Also update the configuration in the gtag initialization:
-
-```javascript
-gtag('config', 'GA_MEASUREMENT_ID');
-```
-
-3. Update `js/config.js`:
-
-```javascript
-GA_MEASUREMENT_ID: 'G-XXXXXXXXXX',
-```
-
-### 3. Configure Ad Settings (Optional)
-
-Edit `js/config.js`:
-
-```javascript
-AD_FREQUENCY: 5,  // Show ad every N videos
-AD_TAG_URL: 'https://your-domain.com/vast-ad-tag.xml',  // VAST ad tag URL
-```
-
-### 4. Update App ID
-
-Edit `config.xml` and replace `YOUR_APP_ID` with your actual Tizen app ID:
-
-```xml
-<tizen:application id="YOUR_APP_ID.SamsungTVApp" package="YOUR_APP_ID" required_version="6.0"/>
+│   ├── app.js             # Main app with splash screen logic
+│   ├── config.js          # Config loader (remote/local)
+│   ├── mrss-parser.js     # Multi-feed MRSS parser
+│   ├── ui-manager.js      # UI rendering
+│   ├── video-player.js    # AVPlay video player
+│   ├── ad-manager.js      # Preroll ad system
+│   ├── analytics.js       # Google Analytics
+│   └── navigation.js      # Remote control navigation
+├── images/
+│   ├── logo.png           # Splash screen logo
+│   ├── icon.png           # App icon (512x512)
+│   └── placeholder.png    # Fallback thumbnail
+├── CONFIG.md              # Detailed configuration guide
+├── INSTALLATION.md        # Setup and deployment guide
+└── sample-feed.xml        # Sample MRSS feed
 ```
 
 ## MRSS Feed Format
 
-Your MRSS feed should follow this structure:
+Each category should have its own MRSS feed:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
-        <title>Your Channel</title>
+        <title>Category Name</title>
         <item>
             <title>Video Title</title>
             <description>Video description</description>
-            <category>Category Name</category>
-            <media:thumbnail url="https://example.com/thumbnail.jpg"/>
+            <media:thumbnail url="https://example.com/thumb.jpg"/>
             <media:content url="https://example.com/video.m3u8" type="application/x-mpegURL"/>
         </item>
-        <!-- More items -->
     </channel>
 </rss>
 ```
 
-### Required Fields
+## Key Features Explained
 
-- `<title>`: Video title
-- `<category>`: Category name (used to group videos into rows)
-- `<media:thumbnail url="">`: Thumbnail image URL
-- `<media:content url="">`: M3U8 video stream URL
+### Splash Screen
+- Displays on app launch with your logo
+- Configurable background color matching your brand
+- Logo scales automatically (default 50%)
+- Configurable duration (default 3 seconds)
+- Smooth fade-in and fade-out animations
 
-## Building and Installing
+### Web-Based Configuration
+- Update content feeds without rebuilding app
+- Change theming, colors, and fonts remotely
+- Enable/disable categories dynamically
+- Adjust ad frequency on the fly
+- Perfect for managing multiple deployments
+
+### Multiple Feed Support
+- Each category loads from its own MRSS feed
+- Feeds load in parallel for fast startup
+- Failed feeds won't break other categories
+- Easy to add/remove categories via config
+
+### Theming System
+- Uses CSS variables for easy customization
+- Inter font by default (with Google Fonts fallback)
+- Configurable background, text, and accent colors
+- Consistent styling across all screens
+
+## Building and Testing
 
 ### Prerequisites
-
-- Tizen Studio installed
-- Samsung TV for testing (or Tizen TV emulator)
-- Developer mode enabled on Samsung TV
+- Tizen Studio
+- Samsung TV (Developer Mode enabled) or TV Emulator
 
 ### Build Steps
-
-1. Open Tizen Studio
-2. Import the project: File > Open Projects from File System
+1. Open project in Tizen Studio
+2. File > Open Projects from File System
 3. Select the `SamsungTVApp` directory
-4. Right-click project > Build Project
-5. Right-click project > Run As > Tizen TV Web Application
+4. Build Project
+5. Run on emulator or TV
 
-### Installation on Samsung TV
-
-1. Enable Developer Mode on your Samsung TV:
-   - Press Home button
-   - Navigate to Apps
-   - Enter 12345 on remote
-   - Set Developer Mode to ON
-   - Enter your computer's IP address
-   - Restart TV
-
-2. Install the app:
-   - In Tizen Studio, select your TV from the Connection Explorer
-   - Right-click the project > Run As > Tizen TV Web Application
+See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions.
 
 ## Remote Control Keys
 
 ### Content Browser
-
-- **Arrow Keys**: Navigate through content
+- **Arrow Keys**: Navigate content
 - **Enter/OK**: Select and play video
-- **Back**: Exit application
+- **Back**: Exit app
 
 ### Video Player
-
 - **Play/Pause**: Toggle playback
-- **Stop**: Stop video and return to browser
-- **Fast Forward / Right Arrow**: Seek forward 10 seconds
-- **Rewind / Left Arrow**: Seek backward 10 seconds
-- **Back**: Stop video and return to browser
+- **Stop**: Stop and return to browser
+- **Fast Forward/Right**: Seek +10 seconds
+- **Rewind/Left**: Seek -10 seconds
+- **Back**: Stop and return
 
-## Google Analytics Events Tracked
+## Analytics Events Tracked
 
-### App Events
 - App Launch
-- Content Load Success/Failure
-
-### Video Events
+- Content Load (Success/Failure)
 - Video Play (with title and category)
-- Video Complete (with title and category)
+- Video Complete
+- Ad Impression/Start/Complete/Skip/Error
+- Navigation events
+- All errors with details
 
-### Ad Events
-- Ad Impression
-- Ad Start
-- Ad Complete
-- Ad Skip
-- Ad Error
+## Ad System
 
-### Navigation Events
-- Navigation direction
-- Video selection
+- Preroll ads shown every N videos (configurable)
+- Play counter stored in localStorage
+- VAST ad tag support (requires implementation)
+- Tracks all ad events to Analytics
 
-### Error Events
-- All errors with type and message
+## Customization Examples
 
-## Video Counter and Ad Frequency
-
-The app tracks the number of videos played using localStorage. Every 5 videos (configurable), a preroll ad will play before the selected video.
-
-To reset the counter (for testing):
-```javascript
-AdManager.resetCounter();
+### Netflix-Style Theme
+```json
+"theme": {
+  "backgroundColor": "#141414",
+  "textColor": "#ffffff",
+  "fontFamily": "Inter, Arial, sans-serif",
+  "accentColor": "#e50914"
+}
 ```
+
+### Corporate Blue Theme (Default)
+```json
+"theme": {
+  "backgroundColor": "#00277e",
+  "textColor": "#ffffff",
+  "fontFamily": "Inter, Arial, sans-serif",
+  "accentColor": "#ffffff"
+}
+```
+
+## Documentation
+
+- [CONFIG.md](CONFIG.md) - Detailed configuration guide
+- [INSTALLATION.md](INSTALLATION.md) - Setup and deployment
+- [sample-feed.xml](sample-feed.xml) - Example MRSS feed
 
 ## Troubleshooting
 
-### Videos not loading
-- Check MRSS feed URL is accessible
-- Verify M3U8 URLs are valid and accessible
-- Check network connectivity
-- Review console logs for errors
+**Splash screen not showing:**
+- Check `splash.enabled` is `true` in config
+- Verify logo.png exists in images folder
+- Check browser console for errors
 
-### Ads not playing
-- Verify AD_TAG_URL is set correctly
-- Check VAST ad tag returns valid ad URLs
-- Ad implementation includes placeholder for VAST parsing
+**Configuration not loading:**
+- Validate JSON syntax at jsonlint.com
+- Check CONFIG_URL is accessible
+- Verify CORS headers if using remote config
+- Try USE_LOCAL_CONFIG: true for testing
 
-### Analytics not tracking
-- Verify GA_MEASUREMENT_ID is correct
-- Check internet connectivity
-- Review browser console for gtag errors
+**Videos not playing:**
+- Ensure M3U8 URLs are accessible
+- Check CORS settings on video server
+- Verify feedUrl values in config
+- Test feeds in browser
 
-## Development
-
-### Debug Mode
-
-Debug mode is enabled by default in `js/config.js`:
-
-```javascript
-DEBUG: true
-```
-
-This will log additional information to the console.
-
-### Testing
-
-You can test the app in:
-1. Tizen TV Emulator (Tizen Studio)
-2. Samsung TV Web Simulator
-3. Actual Samsung TV with Developer Mode
-
-## License
-
-This project is provided as-is for use with Samsung Tizen TVs.
+**Theme not applying:**
+- Check hex color format (#RRGGBB)
+- Verify config loaded successfully
+- Check browser console for CSS errors
 
 ## Support
 
-For Samsung Tizen development documentation, visit:
-- https://developer.samsung.com/smarttv/develop/getting-started/setting-up-sdk.html
-- https://developer.tizen.org/development/training/web-application
+For Samsung Tizen development:
+- https://developer.samsung.com/smarttv
+- https://developer.tizen.org/
+
+For issues with this app, check the console logs for detailed error messages.
+
+## License
+
+Provided as-is for use with Samsung Tizen TVs.

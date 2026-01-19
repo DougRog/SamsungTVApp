@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "Samsung TV App",
+    "version": "1.0.0"
+  },
+  "theme": {
+    "backgroundColor": "#00277e",
+    "textColor": "#ffffff",
+    "fontFamily": "Inter, Arial, sans-serif",
+    "accentColor": "#ffffff"
+  },
+  "splash": {
+    "enabled": true,
+    "backgroundColor": "#00277e",
+    "logoUrl": "images/logo.png",
+    "logoScale": 0.5,
+    "duration": 3000
+  },
+  "analytics": {
+    "googleAnalyticsId": "G-XXXXXXXXXX",
+    "enabled": true
+  },
+  "ads": {
+    "enabled": true,
+    "frequency": 5,
+    "vastTagUrl": "https://example.com/vast-ad-tag.xml"
+  },
+  "categories": [
+    {
+      "name": "Action",
+      "feedUrl": "https://example.com/feeds/action.xml",
+      "enabled": true
+    },
+    {
+      "name": "Comedy",
+      "feedUrl": "https://example.com/feeds/comedy.xml",
+      "enabled": true
+    },
+    {
+      "name": "Drama",
+      "feedUrl": "https://example.com/feeds/drama.xml",
+      "enabled": true
+    },
+    {
+      "name": "Documentary",
+      "feedUrl": "https://example.com/feeds/documentary.xml",
+      "enabled": true
+    }
+  ]
+}

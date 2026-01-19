@@ -1,5 +1,13 @@
 /* Samsung TV App Styles */
 
+:root {
+    /* Default theme colors - will be overridden by config */
+    --theme-bg-color: #00277e;
+    --theme-text-color: #ffffff;
+    --theme-font-family: 'Inter', Arial, sans-serif;
+    --theme-accent-color: #ffffff;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,9 +15,9 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--theme-font-family);
     background-color: #000;
-    color: #fff;
+    color: var(--theme-text-color);
     overflow: hidden;
     width: 1920px;
     height: 1080px;
@@ -28,6 +36,53 @@ body {
     left: 0;
 }
 
+/* Splash Screen */
+#splash-screen {
+    background-color: var(--theme-bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#splash-logo {
+    max-width: 80%;
+    max-height: 80vh;
+    object-fit: contain;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+#splash-screen.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
 /* Browser Screen */
 #browser-screen {
     background-color: #0a0a0a;
@@ -41,8 +96,8 @@ body {
 
 #header h1 {
     font-size: 48px;
-    font-weight: bold;
-    color: #fff;
+    font-weight: 600;
+    color: var(--theme-text-color);
 }
 
 #content-container {
@@ -71,9 +126,9 @@ body {
 
 .category-title {
     font-size: 36px;
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 20px;
-    color: #fff;
+    color: var(--theme-text-color);
 }
 
 .thumbnail-container {
@@ -131,7 +186,7 @@ body {
 
 .thumbnail.focused {
     transform: scale(1.15);
-    border-color: #fff;
+    border-color: var(--theme-accent-color);
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
     z-index: 10;
 }
