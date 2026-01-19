@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title>Sample TV Channel</title>
+        <description>Sample MRSS feed for Samsung TV App</description>
+
+        <!-- Category: Action -->
+        <item>
+            <title>Action Movie 1</title>
+            <description>An exciting action-packed adventure</description>
+            <category>Action</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/FF0000/FFFFFF?text=Action+1"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <item>
+            <title>Action Movie 2</title>
+            <description>Another thrilling action movie</description>
+            <category>Action</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/FF0000/FFFFFF?text=Action+2"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <item>
+            <title>Action Movie 3</title>
+            <description>High-octane action sequences</description>
+            <category>Action</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/FF0000/FFFFFF?text=Action+3"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <!-- Category: Comedy -->
+        <item>
+            <title>Comedy Show 1</title>
+            <description>Hilarious comedy special</description>
+            <category>Comedy</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/00FF00/FFFFFF?text=Comedy+1"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <item>
+            <title>Comedy Show 2</title>
+            <description>Laugh-out-loud funny moments</description>
+            <category>Comedy</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/00FF00/FFFFFF?text=Comedy+2"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <!-- Category: Drama -->
+        <item>
+            <title>Drama Series 1</title>
+            <description>Compelling dramatic story</description>
+            <category>Drama</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/0000FF/FFFFFF?text=Drama+1"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <item>
+            <title>Drama Series 2</title>
+            <description>Emotional and engaging drama</description>
+            <category>Drama</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/0000FF/FFFFFF?text=Drama+2"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <item>
+            <title>Drama Series 3</title>
+            <description>Award-winning drama</description>
+            <category>Drama</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/0000FF/FFFFFF?text=Drama+3"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <!-- Category: Documentary -->
+        <item>
+            <title>Documentary 1</title>
+            <description>Fascinating documentary about nature</description>
+            <category>Documentary</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/FFFF00/000000?text=Doc+1"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+
+        <item>
+            <title>Documentary 2</title>
+            <description>Educational and informative</description>
+            <category>Documentary</category>
+            <media:thumbnail url="https://via.placeholder.com/320x180/FFFF00/000000?text=Doc+2"/>
+            <media:content url="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" type="application/x-mpegURL"/>
+        </item>
+    </channel>
+</rss>

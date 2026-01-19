@@ -1,0 +1,19 @@
+# Tizen Studio
+.tproject
+.sign/
+.buildResult/
+.build/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build outputs
+*.wgt
