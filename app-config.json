@@ -23,7 +23,10 @@
   "ads": {
     "enabled": true,
     "frequency": 5,
-    "vastTagUrl": "https://example.com/vast-ad-tag.xml"
+    "vastTagUrl": "https://pbs.getpublica.com/v1/s2s-hb?site_id=65414&app_bundle={{APP_BUNDLE}}&did={{DEVICE_ID}}&format=vast&pod_duration=30&min_ad_duration=6&max_ad_duration=30&cb={{CACHEBUSTER}}&ip={{IP}}&app_domain=erienewsnow.com&app_name={{APP_NAME}}&app_store_url={{APP_STORE_URL}}&position=preroll&schain=erienewsnow&deviceprovider=da-v3",
+    "appBundle": "com.erienewsnow.samsungtv",
+    "appName": "Erie News Now",
+    "appStoreUrl": "https://example.com/app-store-url"
   },
   "categories": [
     {

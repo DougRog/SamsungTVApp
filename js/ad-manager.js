@@ -51,8 +51,13 @@ const AdManager = {
         this.videoCount++;
         this.saveVideoCount();
 
-        // Show ad every 5 videos
-        if (this.videoCount % AppConfig.AD_FREQUENCY === 0) {
+        // Check if ads are enabled in config
+        const adsConfig = App.config?.ads;
+        const adsEnabled = adsConfig?.enabled !== false;
+        const adFrequency = adsConfig?.frequency || 5;
+
+        // Show ad every N videos if enabled
+        if (adsEnabled && this.videoCount % adFrequency === 0) {
             this.pendingVideo = video;
             this.playPrerollAd();
         } else {
@@ -123,24 +128,109 @@ const AdManager = {
      */
     async fetchAdUrl() {
         try {
-            // In a real implementation, fetch and parse VAST XML
-            // For this example, return a placeholder M3U8 ad URL
-            // Replace with actual VAST tag parsing logic
+            const adsConfig = App.config?.ads;
 
-            if (!AppConfig.AD_TAG_URL) {
+            if (!adsConfig || !adsConfig.vastTagUrl) {
+                console.log('No VAST tag URL configured');
                 return null;
             }
 
-            // Simple placeholder - in production, parse VAST XML
-            // const response = await fetch(AppConfig.AD_TAG_URL);
-            // const vastXml = await response.text();
-            // Parse VAST and extract MediaFile URL
+            // Build VAST URL with dynamic parameters
+            const vastUrl = await VASTUtils.buildVASTUrl(adsConfig.vastTagUrl, adsConfig);
 
-            // For now, return null to skip ad if no URL configured
-            return null;
+            if (!vastUrl) {
+                console.log('Failed to build VAST URL');
+                return null;
+            }
+
+            console.log('Fetching VAST from:', vastUrl);
+
+            // Fetch VAST XML
+            const response = await fetch(vastUrl);
+
+            if (!response.ok) {
+                throw new Error(`VAST fetch failed: ${response.status}`);
+            }
+
+            const vastXml = await response.text();
+
+            // Parse VAST XML and extract media file URL
+            const adUrl = this.parseVASTXml(vastXml);
+
+            return adUrl;
 
         } catch (error) {
             console.error('Error fetching ad:', error);
+            Analytics.trackError('VAST Fetch Error', error.message);
+            return null;
+        }
+    },
+
+    /**
+     * Parse VAST XML and extract media file URL
+     * @param {string} vastXml - VAST XML string
+     * @returns {string|null} Ad media file URL (M3U8 or MP4)
+     */
+    parseVASTXml(vastXml) {
+        try {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(vastXml, 'text/xml');
+
+            // Check for parsing errors
+            const parserError = xmlDoc.querySelector('parsererror');
+            if (parserError) {
+                throw new Error('VAST XML parsing error');
+            }
+
+            // Look for MediaFile elements
+            const mediaFiles = xmlDoc.querySelectorAll('MediaFile');
+
+            if (mediaFiles.length === 0) {
+                console.warn('No MediaFile found in VAST response');
+                return null;
+            }
+
+            // Prefer HLS (M3U8) format, fallback to MP4
+            let selectedMediaFile = null;
+
+            // First, try to find M3U8/HLS
+            for (let mediaFile of mediaFiles) {
+                const type = mediaFile.getAttribute('type') || '';
+                const url = mediaFile.textContent.trim();
+
+                if (type.includes('mpegurl') || type.includes('m3u8') || url.includes('.m3u8')) {
+                    selectedMediaFile = url;
+                    break;
+                }
+            }
+
+            // Fallback to MP4
+            if (!selectedMediaFile) {
+                for (let mediaFile of mediaFiles) {
+                    const type = mediaFile.getAttribute('type') || '';
+                    const url = mediaFile.textContent.trim();
+
+                    if (type.includes('mp4') || url.includes('.mp4')) {
+                        selectedMediaFile = url;
+                        break;
+                    }
+                }
+            }
+
+            // Last resort: use first MediaFile
+            if (!selectedMediaFile && mediaFiles.length > 0) {
+                selectedMediaFile = mediaFiles[0].textContent.trim();
+            }
+
+            if (selectedMediaFile) {
+                console.log('Selected ad media file:', selectedMediaFile);
+                return selectedMediaFile;
+            }
+
+            return null;
+
+        } catch (error) {
+            console.error('Error parsing VAST XML:', error);
             return null;
         }
     },

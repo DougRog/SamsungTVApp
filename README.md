@@ -212,10 +212,24 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions.
 
 ## Ad System
 
-- Preroll ads shown every N videos (configurable)
-- Play counter stored in localStorage
-- VAST ad tag support (requires implementation)
-- Tracks all ad events to Analytics
+- **Dynamic VAST Integration**: Automatic parameter substitution for server-side header bidding
+- **Preroll Ads**: Shown every N videos (configurable frequency)
+- **Device Tracking**: Automatic device ID and IP detection
+- **VAST Parsing**: Supports VAST 2.0+ with HLS/M3U8 and MP4 formats
+- **Play Counter**: Persistent tracking in localStorage
+- **Analytics**: Tracks all ad events (impression, start, complete, error)
+
+### VAST Tag Variables
+
+The app automatically replaces these variables in your VAST URL:
+- `{{APP_BUNDLE}}` - App bundle identifier
+- `{{DEVICE_ID}}` - Samsung TV device ID (auto-detected)
+- `{{CACHEBUSTER}}` - Timestamp for cache prevention
+- `{{IP}}` - Device IP address (auto-detected)
+- `{{APP_NAME}}` - Application name
+- `{{APP_STORE_URL}}` - App store URL
+
+See [VAST-INTEGRATION.md](VAST-INTEGRATION.md) for complete documentation.
 
 ## Customization Examples
 
@@ -242,6 +256,7 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions.
 ## Documentation
 
 - [CONFIG.md](CONFIG.md) - Detailed configuration guide
+- [VAST-INTEGRATION.md](VAST-INTEGRATION.md) - VAST ad tag integration guide
 - [INSTALLATION.md](INSTALLATION.md) - Setup and deployment
 - [sample-feed.xml](sample-feed.xml) - Example MRSS feed
 

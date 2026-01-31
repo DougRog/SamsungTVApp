@@ -198,17 +198,64 @@ Each category feed should be a valid MRSS XML file:
 
 ## Advertisement Configuration
 
-### Setting Up VAST Ads
+### Setting Up VAST Ads with Dynamic Parameters
 
-1. Obtain a VAST ad tag URL from your ad provider
-2. Update `app-config.json`:
-   ```json
-   "ads": {
-     "enabled": true,
-     "frequency": 5,
-     "vastTagUrl": "https://your-ad-server.com/vast-tag.xml"
-   }
-   ```
+The app supports dynamic VAST tag URLs with automatic parameter substitution. This is useful for server-side header bidding and personalized ad targeting.
+
+**Supported Variables:**
+- `{{APP_BUNDLE}}` - App bundle identifier (e.g., com.erienewsnow.samsungtv)
+- `{{DEVICE_ID}}` - Samsung TV device ID (auto-detected or generated UUID)
+- `{{CACHEBUSTER}}` - Timestamp to prevent caching
+- `{{IP}}` - Device IP address (auto-detected)
+- `{{APP_NAME}}` - Application name
+- `{{APP_STORE_URL}}` - App store URL
+
+**Example Configuration:**
+
+```json
+"ads": {
+  "enabled": true,
+  "frequency": 5,
+  "vastTagUrl": "https://pbs.getpublica.com/v1/s2s-hb?site_id=65414&app_bundle={{APP_BUNDLE}}&did={{DEVICE_ID}}&format=vast&pod_duration=30&min_ad_duration=6&max_ad_duration=30&cb={{CACHEBUSTER}}&ip={{IP}}&app_domain=erienewsnow.com&app_name={{APP_NAME}}&app_store_url={{APP_STORE_URL}}&position=preroll&schain=erienewsnow&deviceprovider=da-v3",
+  "appBundle": "com.erienewsnow.samsungtv",
+  "appName": "Erie News Now",
+  "appStoreUrl": "https://example.com/app-store-url"
+}
+```
+
+**How It Works:**
+
+1. The app automatically replaces all `{{VARIABLES}}` in the VAST tag URL at runtime
+2. Device-specific values (DEVICE_ID, IP, CACHEBUSTER) are automatically collected
+3. Static values (APP_BUNDLE, APP_NAME, APP_STORE_URL) come from your config
+4. All values are properly URL-encoded
+5. The complete URL is used to fetch the VAST XML response
+6. The app parses the VAST response and extracts the media file URL (M3U8 or MP4)
+
+**Device ID Detection:**
+
+The app tries to get the device ID in this order:
+1. Samsung TV API (`webapis.productinfo.getDuid()`)
+2. Samsung TV model number
+3. Generated persistent UUID (stored in localStorage)
+
+**IP Address Detection:**
+
+The app tries to get the IP address from:
+1. Samsung TV network API (`webapis.network.getIp()`)
+2. External service (api.ipify.org) as fallback
+
+### Simple VAST Tag (No Variables)
+
+If you don't need dynamic parameters, you can use a simple VAST URL:
+
+```json
+"ads": {
+  "enabled": true,
+  "frequency": 5,
+  "vastTagUrl": "https://your-ad-server.com/vast-tag.xml"
+}
+```
 
 ### Disabling Ads
 
@@ -217,6 +264,29 @@ Each category feed should be a valid MRSS XML file:
   "enabled": false
 }
 ```
+
+### Ad Frequency
+
+The `frequency` parameter controls how often ads are shown:
+- `frequency: 5` - Show ad every 5 videos
+- `frequency: 3` - Show ad every 3 videos
+- `frequency: 1` - Show ad before every video
+
+### VAST Response Format
+
+The app expects a standard VAST 2.0+ XML response with `<MediaFile>` elements. It will:
+1. Prefer HLS/M3U8 format
+2. Fallback to MP4 format
+3. Use the first available MediaFile as last resort
+
+### Testing Ads
+
+To test the ad system:
+
+1. Set `frequency: 1` to show ad on every video
+2. Check browser console for VAST URL and responses
+3. Enable `DEBUG: true` in `js/config.js` for detailed logging
+4. Use network inspector to verify VAST requests
 
 ## Dynamic Content Updates
 
